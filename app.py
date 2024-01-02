@@ -16,7 +16,7 @@ story = st.empty()
 # Create a function to generate the story
 def generate_story(prompt):
   # Load the tokenizer and model
-  tokenizer = pipeline("text-generation", model="HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.bfloat16, device_map="auto")
+  pipe = pipeline("text-generation", model="HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.bfloat16, device_map="auto")
   # We use the tokenizer's chat template to format each message - see https://huggingface.co/docs/transformers/main/en/chat_templating
   messages = [
       {
@@ -25,7 +25,7 @@ def generate_story(prompt):
       },
       {"role": "user", "content": prompt},
   ]
-  prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+  prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
   outputs = tokenizer(prompt, max_new_tokens=1000, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
   return outputs[0]["generated_text"]
 
