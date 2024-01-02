@@ -26,7 +26,7 @@ def generate_story(prompt):
       {"role": "user", "content": prompt},
   ]
   prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-  outputs = tokenizer(prompt, max_new_tokens=1000, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+  outputs = pipe(prompt, max_new_tokens=1000, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
   return outputs[0]["generated_text"]
 
 # Check if the generate button was clicked
