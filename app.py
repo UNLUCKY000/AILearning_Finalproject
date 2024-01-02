@@ -1,31 +1,33 @@
 import streamlit as st
-import torch
-from transformers import pipeline
 
-def generate_pirate_story():
-    pipe = pipeline("text-generation", model="HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.bfloat16, low_cpu_mem_usage=True)
+st.title("Pirate story generator")
 
-    # System and user messages
-    messages = [
-        {"role": "system", "content": "You are a friendly chatbot who always responds in the style of a pirate"},
-        {"role": "user", "content": st.text_input("Write a story", "Write a story")},
-    ]
+# Create a text input field for the user to enter a prompt
+prompt = st.text_input("Enter a prompt for the story:")
 
-    # Apply chat template
-    prompt = pipe.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+# Create a button for the user to generate the story
+generate_button = st.button("Generate story")
 
-    # Generate text
-    outputs = pipe(prompt, max_new_tokens=1000, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
-    
-    # Display generated text
-    return outputs[0]["generated_text"]
+# Create a text output field to display the generated story
+story = st.empty()
 
-def main():
-    st.title("Pirate Story Generator")
-    
-    # Generate and display pirate story
-    generated_text = generate_pirate_story()
-    st.text_area("Generated Pirate Story", generated_text, height=300)
+# Create a function to generate the story
+def generate_story(prompt):
+  # Load the tokenizer and model
+  tokenizer = pipeline("text-generation", model="HuggingFaceH4/zephyr-7b-beta", torch_dtype=torch.bfloat16, device_map="auto")
+  # We use the tokenizer's chat template to format each message - see https://huggingface.co/docs/transformers/main/en/chat_templating
+  messages = [
+      {
+          "role": "system",
+          "content": "You are a friendly chatbot who always responds in the style of a pirate",
+      },
+      {"role": "user", "content": prompt},
+  ]
+  prompt = tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
+  outputs = tokenizer(prompt, max_new_tokens=1000, do_sample=True, temperature=0.7, top_k=50, top_p=0.95)
+  return outputs[0]["generated_text"]
 
-if __name__ == "__main__":
-    main()
+# Check if the generate button was clicked
+if generate_button:
+  # Generate the story
+  story.text(generate_story(prompt))
