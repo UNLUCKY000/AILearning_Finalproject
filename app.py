@@ -11,7 +11,7 @@ prompt = st.text_input("Enter a prompt for the story:")
 generate_button = st.button("Generate story")
 
 # Create a text output field to display the generated story
-story = st.empty()
+# story = st.empty()
 
 # Create a function to generate the story
 def generate_story(prompt):
@@ -32,4 +32,4 @@ def generate_story(prompt):
 # Check if the generate button was clicked
 if generate_button:
   # Generate the story
-  story.text(generate_story(prompt))
+  st.write(generate_story(prompt))
