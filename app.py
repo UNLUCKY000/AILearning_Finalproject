@@ -1,6 +1,7 @@
 import streamlit as st
 import transformers
 from transformers import pipeline
+import torch
 
 # Load the model and tokenizer
 model_name = "HuggingFaceH4/zephyr-7b-beta"
